@@ -45,10 +45,11 @@ ssh [login]@mmi.unilim.fr "cd ~/public_html/sae301 && php ~/wp-cli.phar plugin a
 
 ## Cas 3 — Contenu ou réglages en base (produits, pages, options WooCommerce)
 
-Avant l'itération 5 uniquement — **écrase la base de Prod** :
+**Écrase la base de Prod** (sauvegarde automatique avant import dans `~/sae301-prod-avant-import.sql` sur le serveur) :
 ```bash
-bash it1-prod.sh
+bash prod-step.sh bdd
 ```
+Méthode du sujet (US-1.4) : téléversement de `wp-content/plugins/` et des médias depuis la Dev, export de la BDD de Dev (`ddev export-db`), import en Prod (`wp db import`), puis changement d'URL en SSH avec `wp search-replace`.
 Le script exporte la BDD de Dev, l'importe en Prod puis remplace les URL avec `wp search-replace` (jamais un rechercher/remplacer dans le fichier SQL : cela casserait les données sérialisées).
 
 Après l'itération 5 : refaire la modification à la main dans l'admin de Prod, ou exporter/importer uniquement les produits (Produits › Exporter / Importer en CSV).
@@ -67,3 +68,39 @@ rsync -az site/wp-content/uploads/ [login]@mmi.unilim.fr:public_html/sae301/wp-c
 | Liens qui pointent vers `sae301.ddev.site` | search-replace non fait | `wp search-replace 'https://sae301.ddev.site' '<url prod>' --all-tables-with-prefix` |
 | « Erreur lors de la connexion à la base de données » | identifiants DB_* | vérifier `wp-config.php` en Prod |
 | SSH refusé hors de l'IUT | réseau | activer le VPN FortiClient |
+
+## Mise en Prod itération par itération (prod-step.sh)
+
+Une étape par jour ou par séance, dans l'ordre. Chaque lancement : thème au commit de l'itération, extensions, contenus de l'itération, contrôle HTTP, ligne dans JOURNAL.md (section « Journal Prod — étapes »).
+
+| Étape | Commande | Ce qui est déployé |
+|---|---|---|
+| 1 | `bash prod-step.sh it1` | WordPress fr, préfixe r3sae01_, Storefront, WooCommerce, SCF, Classic Editor, thème enfant |
+| 2 | `bash prod-step.sh it2` | charte, photos, catalogue (9 produits simples), surcharges Storefront |
+| 3 | `bash prod-step.sh it3` | produits variables, parfums, stocks |
+| 4 | `bash prod-step.sh it4` | allergènes, nutrition, composition |
+| 5 | `bash prod-step.sh it5` | paiements, retrait gratuit, livraison payante, panier |
+| 6 | `bash prod-step.sh it6` | checkout, instructions et code de retrait |
+| 7 | `bash prod-step.sh it7` | compte client |
+| 8 | `bash prod-step.sh it8` | e-mails transactionnels |
+| 9 | `bash prod-step.sh it9` | statuts de commande, scénarios |
+| 10 | `bash prod-step.sh it10` | codes promo |
+| 11 | `bash prod-step.sh it11` | équipe (CPT UI, SCF, templates) |
+| 12 | `bash prod-step.sh it12` | taxonomie « moment », page Nos envies |
+| 13 | `bash prod-step.sh it13` | ventes croisées |
+| 14 | `bash prod-step.sh it14` | avis clients |
+| 15 | `bash prod-step.sh it15` | frais de préparation |
+| 16 | `bash prod-step.sh it16` | 3 derniers produits sur l’accueil |
+| 17 | `bash prod-step.sh it17` | factures PDF |
+| 18 | `bash prod-step.sh it18` | filtres en barre latérale |
+| 19 | `bash prod-step.sh it19` | tarif de livraison au poids |
+| 20 | `bash prod-step.sh it20` | créneaux |
+| 21 | `bash prod-step.sh it21` | SEO |
+| 22 | `bash prod-step.sh it22` | mentions légales, CGV |
+| 23 | `bash prod-step.sh itw` | produit star |
+| 24 | `bash prod-step.sh itx` | anti-spam |
+| 25 | `bash prod-step.sh itz` | traductions |
+| 26 | `bash prod-step.sh main` | dernière version du thème (correctifs) ; CPT et taxonomie gérés par SCF, CPT UI retiré |
+| — | `bash prod-step.sh bdd` | Prod = copie exacte de la Dev (BDD, extensions, médias) |
+
+Les mots de passe (SSH, MySQL, admin) sont tapés au clavier quand le script les demande ; rien n'est enregistré, sauf identifiant SSH, dossier et URL dans `.prod.conf`.
