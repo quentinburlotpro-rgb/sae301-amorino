@@ -5,18 +5,37 @@ SAé 3.01 — Amorino Click & Collect · Quentin Burlot · BUT2 MMI
 | | Dev | Prod |
 |---|---|---|
 | Où | Mac, conteneur DDEV `sae301` | Serveur mmi.unilim.fr |
-| URL | https://sae301.ddev.site | https://mmi.unilim.fr/~[login]/sae301 |
+| URL | https://sae301.ddev.site | https://mmi.unilim.fr/~burlot4/sae301/ |
 | Dossier | `~/Desktop/sae 3.01/site` | `~/public_html/sae301` |
 | Préfixe BDD | `r3sae01_` | `r3sae01_` |
 | Thème actif | `storefront-child` (parent : Storefront) | idem |
 | Dépôt du thème | https://github.com/quentinburlotpro-rgb/storefront-child | cloné dans `wp-content/themes/storefront-child` |
 
-## Règle d'or
+Dans les commandes, `wp` désigne WP-CLI sur le serveur (ou `php ~/wp-cli.phar` s'il n'est pas installé). Les mots de passe sont toujours tapés au clavier, jamais écrits dans un fichier.
 
-**Le code passe par GitHub, les plugins par rsync, la base par export/import.**
-À partir de l'itération 5 (commandes clients en Prod), **ne plus écraser la BDD de Prod** : refaire les réglages directement en Prod, ou n'importer que des tables précises.
+## Règle
 
-## Cas 1 — Modification du thème enfant (le plus fréquent)
+**Le code passe par GitHub, les extensions et les médias par rsync, la base par export / import.**
+Chaque commit du thème porte l'étiquette de son itération, `[IT-X]`, ce qui permet de déployer une itération précise.
+
+## 1. Installation initiale (US-1.4)
+
+```bash
+ssh burlot4@mmi.unilim.fr
+cd ~/public_html && mkdir sae301 && cd sae301
+wp core download --locale=fr_FR
+wp config create --dbname=burlot4 --dbuser=burlot4 --prompt=dbpass --dbprefix=r3sae01_ --locale=fr_FR
+git clone https://github.com/quentinburlotpro-rgb/storefront-child.git wp-content/themes/storefront-child
+```
+Depuis le Mac, téléversement de Storefront et des extensions de la Dev :
+```bash
+cd ~/Desktop/"sae 3.01"/site/wp-content
+rsync -az themes/storefront/ burlot4@mmi.unilim.fr:public_html/sae301/wp-content/themes/storefront/
+rsync -az plugins/ burlot4@mmi.unilim.fr:public_html/sae301/wp-content/plugins/
+```
+Puis import de la base (section 3) et permaliens `/%postname%/` avec un `.htaccess` dont le `RewriteBase` vaut `/~burlot4/sae301/`.
+
+## 2. Modification du thème enfant (le plus fréquent)
 
 En Dev :
 ```bash
@@ -27,80 +46,56 @@ git push
 ```
 En Prod :
 ```bash
-ssh [login]@mmi.unilim.fr
-cd ~/public_html/sae301/wp-content/themes/storefront-child && git pull --ff-only
+ssh burlot4@mmi.unilim.fr
+cd ~/public_html/sae301/wp-content/themes/storefront-child
+git fetch origin && git reset --hard origin/main
 ```
-Vérifier la page modifiée en Prod, puis ajouter une ligne au journal.
-
-## Cas 2 — Nouveau plugin (ou mise à jour d'un plugin)
-
-En Dev : installer et tester (`ddev wp plugin install <slug> --activate`).
-Envoi en Prod :
+Pour déployer une itération précise plutôt que la dernière version :
 ```bash
-cd ~/Desktop/"sae 3.01"
-rsync -az site/wp-content/plugins/<slug>/ [login]@mmi.unilim.fr:public_html/sae301/wp-content/plugins/<slug>/
-ssh [login]@mmi.unilim.fr "cd ~/public_html/sae301 && php ~/wp-cli.phar plugin activate <slug>"
+git checkout $(git log --format=%h --grep='^\[IT-12\]' -1)
 ```
-(remplacer `php ~/wp-cli.phar` par `wp` si WP-CLI est installé sur le serveur)
-
-## Cas 3 — Contenu ou réglages en base (produits, pages, options WooCommerce)
-
-**Écrase la base de Prod** (sauvegarde automatique avant import dans `~/sae301-prod-avant-import.sql` sur le serveur) :
+Les réglages et contenus propres à une itération sont dans `setup/` du thème (scripts relançables) :
 ```bash
-bash prod-step.sh bdd
+cd ~/public_html/sae301 && wp eval-file wp-content/themes/storefront-child/setup/it12-taxonomie.php && wp rewrite flush
 ```
-Méthode du sujet (US-1.4) : téléversement de `wp-content/plugins/` et des médias depuis la Dev, export de la BDD de Dev (`ddev export-db`), import en Prod (`wp db import`), puis changement d'URL en SSH avec `wp search-replace`.
-Le script exporte la BDD de Dev, l'importe en Prod puis remplace les URL avec `wp search-replace` (jamais un rechercher/remplacer dans le fichier SQL : cela casserait les données sérialisées).
+Vérifier les pages modifiées, puis ajouter une ligne à [JOURNAL.md](JOURNAL.md).
 
-Après l'itération 5 : refaire la modification à la main dans l'admin de Prod, ou exporter/importer uniquement les produits (Produits › Exporter / Importer en CSV).
+## 3. Base de données et médias
 
-## Médias (images produits)
+**Écrase la base de Prod** : sauvegarde d'abord.
+```bash
+# Mac
+cd ~/Desktop/"sae 3.01"/site
+ddev export-db --gzip=false --file=dump.sql
+rsync -az wp-content/uploads/ burlot4@mmi.unilim.fr:public_html/sae301/wp-content/uploads/
+scp dump.sql burlot4@mmi.unilim.fr:public_html/sae301/ && rm dump.sql
+
+# Serveur
+cd ~/public_html/sae301
+wp db export ~/sae301-prod-avant-import.sql
+wp db import dump.sql && rm dump.sql
+wp search-replace 'https://sae301.ddev.site' 'https://mmi.unilim.fr/~burlot4/sae301' --all-tables-with-prefix --skip-columns=guid --precise
+wp search-replace '//sae301.ddev.site' '//mmi.unilim.fr/~burlot4/sae301' --all-tables-with-prefix --skip-columns=guid --precise
+wp rewrite flush
+```
+Le changement d'adresse se fait toujours avec `wp search-replace`, jamais dans le fichier SQL (les données sérialisées seraient cassées). Le fichier SQL ne va jamais dans un dépôt GitHub.
+
+## 4. Extension ajoutée ou mise à jour
 
 ```bash
-rsync -az site/wp-content/uploads/ [login]@mmi.unilim.fr:public_html/sae301/wp-content/uploads/
+rsync -az site/wp-content/plugins/<slug>/ burlot4@mmi.unilim.fr:public_html/sae301/wp-content/plugins/<slug>/
+ssh burlot4@mmi.unilim.fr "cd ~/public_html/sae301 && wp plugin activate <slug> && wp language plugin install --all fr_FR"
 ```
+
+## 5. Cache (IT-Y)
+
+Le `.htaccess` de la Prod contient, après le bloc WordPress, un bloc « Amorino cache » : durées de cache des images, polices, CSS et JS (`mod_expires` / `mod_headers`) et compression (`mod_deflate`).
 
 ## En cas de problème
 
 | Symptôme | Cause probable | Correction |
 |---|---|---|
-| Erreur 404 sur toutes les pages sauf l'accueil | `.htaccess` absent ou mauvais `RewriteBase` | relancer l'étape 8 de `it1-prod.sh`, ou Réglages › Permaliens › Enregistrer |
-| Liens qui pointent vers `sae301.ddev.site` | search-replace non fait | `wp search-replace 'https://sae301.ddev.site' '<url prod>' --all-tables-with-prefix` |
-| « Erreur lors de la connexion à la base de données » | identifiants DB_* | vérifier `wp-config.php` en Prod |
-| SSH refusé hors de l'IUT | réseau | activer le VPN FortiClient |
-
-## Mise en Prod itération par itération (prod-step.sh)
-
-Une étape par jour ou par séance, dans l'ordre. Chaque lancement : thème au commit de l'itération, extensions, contenus de l'itération, contrôle HTTP, ligne dans JOURNAL.md (section « Journal Prod — étapes »).
-
-| Étape | Commande | Ce qui est déployé |
-|---|---|---|
-| 1 | `bash prod-step.sh it1` | WordPress fr, préfixe r3sae01_, Storefront, WooCommerce, SCF, Classic Editor, thème enfant |
-| 2 | `bash prod-step.sh it2` | charte, photos, catalogue (9 produits simples), surcharges Storefront |
-| 3 | `bash prod-step.sh it3` | produits variables, parfums, stocks |
-| 4 | `bash prod-step.sh it4` | allergènes, nutrition, composition |
-| 5 | `bash prod-step.sh it5` | paiements, retrait gratuit, livraison payante, panier |
-| 6 | `bash prod-step.sh it6` | checkout, instructions et code de retrait |
-| 7 | `bash prod-step.sh it7` | compte client |
-| 8 | `bash prod-step.sh it8` | e-mails transactionnels |
-| 9 | `bash prod-step.sh it9` | statuts de commande, scénarios |
-| 10 | `bash prod-step.sh it10` | codes promo |
-| 11 | `bash prod-step.sh it11` | équipe (CPT UI, SCF, templates) |
-| 12 | `bash prod-step.sh it12` | taxonomie « moment », page Nos envies |
-| 13 | `bash prod-step.sh it13` | ventes croisées |
-| 14 | `bash prod-step.sh it14` | avis clients |
-| 15 | `bash prod-step.sh it15` | frais de préparation |
-| 16 | `bash prod-step.sh it16` | 3 derniers produits sur l’accueil |
-| 17 | `bash prod-step.sh it17` | factures PDF |
-| 18 | `bash prod-step.sh it18` | filtres en barre latérale |
-| 19 | `bash prod-step.sh it19` | tarif de livraison au poids |
-| 20 | `bash prod-step.sh it20` | créneaux |
-| 21 | `bash prod-step.sh it21` | SEO |
-| 22 | `bash prod-step.sh it22` | mentions légales, CGV |
-| 23 | `bash prod-step.sh itw` | produit star |
-| 24 | `bash prod-step.sh itx` | anti-spam |
-| 25 | `bash prod-step.sh itz` | traductions |
-| 26 | `bash prod-step.sh main` | dernière version du thème (correctifs) ; CPT et taxonomie gérés par SCF, CPT UI retiré |
-| — | `bash prod-step.sh bdd` | Prod = copie exacte de la Dev (BDD, extensions, médias) |
-
-Les mots de passe (SSH, MySQL, admin) sont tapés au clavier quand le script les demande ; rien n'est enregistré, sauf identifiant SSH, dossier et URL dans `.prod.conf`.
+| 404 sur toutes les pages sauf l'accueil | `.htaccess` absent ou mauvais `RewriteBase` | Réglages › Permaliens › Enregistrer, ou recréer le `.htaccess` |
+| « Page non trouvée » partout, liens vers `sae301.ddev.site` | search-replace non fait après import | relancer les deux `wp search-replace` |
+| « Erreur lors de la connexion à la base de données » | identifiants `DB_*` | vérifier `wp-config.php` en Prod |
+| SSH refusé hors de l'IUT | réseau | activer le VPN de l'université |

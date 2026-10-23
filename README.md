@@ -1,4 +1,4 @@
-# Amorino — Click & Collect · Dossier de conception (Semaine 1)
+# Amorino — Click & Collect · Dossier de conception
 
 SAé 3.01 — BUT2 MMI, IUT du Limousin. Projet pédagogique, site non officiel.
 
@@ -7,7 +7,6 @@ Contenu du dépôt :
 - `README.md` : analyse d'identité, benchmark, conception UX et spécifications Figma.
 - `DEPLOIEMENT.md` : procédure de mise à jour Dev → Prod.
 - `JOURNAL.md` : journal des mises en production.
-- `it1-dev.sh`, `it1-prod.sh` : scripts de l'itération 1 (environnement DDEV, déploiement mmi.unilim.fr).
 
 Le thème enfant WordPress est dans un dépôt séparé, cloné en Prod dans `wp-content/themes/` :
 https://github.com/quentinburlotpro-rgb/storefront-child

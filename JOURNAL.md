@@ -1,33 +1,11 @@
 # Journal des mises en production
 
-SAé 3.01 — Amorino Click & Collect · Prod : https://mmi.unilim.fr/~[login]/sae301
+SAé 3.01 — Amorino Click & Collect · Quentin Burlot · Prod : https://mmi.unilim.fr/~burlot4/sae301/
 
-| Date | Itération | Commit déployé | Code | Plugins | BDD | Vérifications | Anomalies / remarques |
-|---|---|---|---|---|---|---|---|
-| 12/10/2026 | IT-1 | `[hash]` [IT-1] Création du thème enfant Storefront | thème enfant (git clone) | WooCommerce, Secure Custom Fields, Classic Editor + Storefront | import complet + search-replace | accueil [code HTTP], wp-login [code], /boutique/ [code], connexion admin OK | [à compléter] |
-| | | | | | | | |
+Une ligne par mise en production : date, itération déployée, commit du thème enfant (dépôt [storefront-child](https://github.com/quentinburlotpro-rgb/storefront-child)), extensions actives, traitement de la base, pages vérifiées (code HTTP) et remarques.
 
-**Légende**
-- Code : comment le thème enfant a été mis à jour (git pull / clone).
-- BDD : « import complet » (écrase la Prod), « aucune », ou « manuel en Prod ».
-- Vérifications : pages ouvertes et codes HTTP renvoyés (200 attendu), connexion admin.
-
-
-## Journal de développement (local, DDEV)
-
-| Date | Itération(s) | Commit | Contenu | Vérification |
-|---|---|---|---|---|
-| 12/10/2026 | IT-1 | `7580886` | Thème enfant Storefront, plugins, dépôt GitHub | site local OK, admin OK |
-| 12/10/2026 | IT-2 | `7bbd969` | Charte, logo, 3 catégories, 9 produits, photos | boutique 3 × 3 OK |
-| 12/10/2026 | IT-3 | `b58bf95`, `2d49282` | Produits variables, tuiles, parfums (SCF), stocks | stock faible / épuisé visibles |
-| 16/10/2026 | IT-4 | `6db80ce` | SCF allergènes, nutrition, composition avant le prix | accordéon avant le prix (script) |
-| 18/10/2026 | IT-5 → IT-22, IT-W | `6399c09` | Paiements, retrait, comptes, e-mails, statuts, promos, équipe (CPT UI), taxonomie, ventes croisées, avis, frais, factures, filtres, créneaux, SEO, légal | pages 200, meta SEO, filtres |
-| 18/10/2026 | Maquette | `586da7d`, `4d31be5` | En-tête, accueil, cartes, boutique, fiche, pied de page fidèles à Figma | comparaison visuelle Chrome |
-| 18/10/2026 | IT-6, IT-20, IT-X | (prochain commit) | Checkout sans adresse, code de retrait, anti-spam | commande test |
-
-> Mise en Prod bloquée : identifiants MySQL mmi.unilim.fr non disponibles. Dès réception : `bash it1-prod.sh` (déploie code + base), puis compléter le tableau ci-dessus.
-
-## Journal Prod — étapes
+- **Étape** : IT1 … IT22, ITW, ITX, ITZ = itération ; MAIN = dernière version du thème (correctifs) ; BDD = copie de la base de Dev vers la Prod.
+- **Vérifications** : code HTTP de l'accueil, de la boutique, de la connexion, d'une fiche produit, du panier et de la page équipe (200 attendu).
 
 | Date | Étape | Commit déployé | Code | Extensions actives | BDD | Vérifications | Remarques |
 |---|---|---|---|---|---|---|---|
@@ -66,3 +44,7 @@ SAé 3.01 — Amorino Click & Collect · Prod : https://mmi.unilim.fr/~[login]/s
 | 22/10/2026 | MAIN | `92ccd31 [IT-11] CPT Equipe et taxonomie Moment geres par SCF sans CPT UI` | git checkout | classic-editor woocommerce-pdf-invoices-packing-slips secure-custom-fields woocommerce  | contenus de l’itération (script) |  / 200 · /boutique/ 200 · /wp-login.php 200 · /product/cornet-fleur/ 200 · /panier/ 200 · /equipe/ 200 | RAS |
 | 23/10/2026 | MAIN | `a0015a8 [IT-Y] Accessibilité de l'en-tête et mise en cache des fichiers statiques` | git checkout | classic-editor woocommerce-pdf-invoices-packing-slips secure-custom-fields woocommerce  | contenus de l’itération (script) |  / 200 · /boutique/ 200 · /wp-login.php 200 · /product/cornet-fleur/ 200 · /panier/ 200 · /equipe/ 200 | RAS |
 | 23/10/2026 | MAIN | `25013cb [IT-Y] Performances : styles intégrés, scripts en pied de page, polices non bloquantes` | git checkout | classic-editor woocommerce-pdf-invoices-packing-slips secure-custom-fields woocommerce  | contenus de l’itération (script) |  / 200 · /boutique/ 200 · /wp-login.php 200 · /product/cornet-fleur/ 200 · /panier/ 200 · /equipe/ 200 | RAS |
+
+**Incidents relevés dans le journal**
+- 22/10, IT-1 (lancée 3 fois, le temps de configurer la base) : 404 sur la boutique, la fiche produit, le panier et l'équipe, normal à ce stade (catalogue et pages créés aux itérations suivantes).
+- 22/10, étape BDD : codes 500 puis 404 juste après l'import de la base (adresses du site local pas encore remplacées). Corrigé en relançant `wp search-replace` ; ligne MAIN suivante : toutes les pages en 200.
