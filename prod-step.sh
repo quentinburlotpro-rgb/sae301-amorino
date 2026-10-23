@@ -134,6 +134,8 @@ case "$STEP" in
     theme; setups
     W plugin deactivate custom-post-type-ui --quiet 2>/dev/null || true
     W plugin delete custom-post-type-ui --quiet 2>/dev/null || true
+    UP "$HERE/prod/htaccess-cache.txt" "$HOST:$RDIR/_cache.txt"
+    R "cd ~/$RDIR && sed -i '/# BEGIN Amorino cache/,/# END Amorino cache/d' .htaccess && cat _cache.txt >> .htaccess && rm -f _cache.txt"
     ;;
   bdd)
     theme
