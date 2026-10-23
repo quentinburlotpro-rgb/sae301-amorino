@@ -1,35 +1,24 @@
-/* ==========================================================================
-   Amorino Click & Collect — Design System
-   SAé 3.01 — HTML/CSS natif (sans framework)
-   Couleurs et polices relevées sur amorino.com (styles calculés). "Dérivé" = teinte calculée pour les états.
-   ========================================================================== */
-
-/* ---------- 1. Tokens ---------- */
 :root {
-  /* Couleurs de marque — relevées sur amorino.com (styles calculés, 12/10/2026) */
-  --c-noir: #100b0c;        /* logo, boutons, footer */
-  --c-noir-700: #2e2627;    /* survol (dérivé) */
-  --c-gris: #383838;        /* texte secondaire */
-  --c-gris-500: #6e6869;    /* texte atténué (dérivé, contraste AA) */
-  --c-peche: #e9bc96;       /* accent : CTA "Trouver une boutique" */
-  --c-peche-300: #f3d3b8;   /* accent clair (dérivé) */
-  --c-peche-50: #fde8dc;    /* fond rosé (relevé) */
-  --c-gris-50: #f9f9f9;     /* surface alternative (relevé) */
-  --c-bordure: #ece4df;     /* bordures (dérivé) */
+  --c-noir: #100b0c;
+  --c-noir-700: #2e2627;
+  --c-gris: #383838;
+  --c-gris-500: #6e6869;
+  --c-peche: #e9bc96;
+  --c-peche-300: #f3d3b8;
+  --c-peche-50: #fde8dc;
+  --c-gris-50: #f9f9f9;
+  --c-bordure: #ece4df;
   --c-blanc: #ffffff;
 
-  /* Accents "parfums" (catégories, badges) */
   --c-pistache: #8fa65c;
   --c-framboise: #c2405b;
   --c-mangue: #e9a23b;
 
-  /* Sémantiques */
   --c-success: #3e7d4f;
   --c-warning: #a86a0c;
   --c-danger: #b3261e;
   --c-info: #3a5a7a;
 
-  /* Rôles */
   --bg: var(--c-blanc);
   --surface: var(--c-blanc);
   --surface-alt: var(--c-gris-50);
@@ -41,22 +30,18 @@
   --accent: var(--c-peche);
   --focus: var(--c-peche);
 
-  /* Typographie */
-  /* Officiel : "Silver South Serif" (titres) + "Avenir Next LT Pro" (texte), polices commerciales.
-     Substituts libres Google Fonts ci-dessous ; remplacer si licence disponible. */
   --font-display: "Silver South Serif", "Cormorant Garamond", Georgia, serif;
   --font-body: "Avenir Next LT Pro", "Avenir Next", "Nunito Sans", "Helvetica Neue", Arial, sans-serif;
-  --fs-xs: 0.75rem;   /* 12 */
-  --fs-sm: 0.875rem;  /* 14 */
-  --fs-md: 1rem;      /* 16 */
-  --fs-lg: 1.25rem;   /* 20 */
-  --fs-xl: 1.75rem;   /* 28 */
-  --fs-2xl: 2.5rem;   /* 40 */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.75rem;
+  --fs-2xl: 2.5rem;
   --fs-3xl: clamp(2.5rem, 6vw, 4rem);
   --lh-tight: 1.15;
   --lh-base: 1.55;
 
-  /* Espacements (base 4) */
   --sp-1: 4px;
   --sp-2: 8px;
   --sp-3: 12px;
@@ -66,18 +51,16 @@
   --sp-7: 48px;
   --sp-8: 64px;
 
-  /* Rayons, ombres, transitions */
   --r-sm: 6px;
   --r-md: 14px;
   --r-lg: 24px;
-  --r-pill: 30px; /* boutons du site officiel : 30px */
+  --r-pill: 30px;
   --shadow-sm: 0 1px 2px rgb(16 11 12 / 0.08);
   --shadow-md: 0 8px 24px rgb(16 11 12 / 0.10);
   --t-fast: 150ms ease;
   --container: 1200px;
 }
 
-/* ---------- 2. Base ---------- */
 *,
 *::before,
 *::after { box-sizing: border-box; }
@@ -129,7 +112,6 @@ a { color: inherit; text-underline-offset: 3px; }
   margin-inline: auto;
 }
 
-/* ---------- 3. Mise en page de la page Design System ---------- */
 .ds-hero {
   background: var(--c-noir);
   color: var(--c-blanc);
@@ -191,7 +173,6 @@ a { color: inherit; text-underline-offset: 3px; }
 .space-bar { display: flex; align-items: center; gap: var(--sp-3); font-size: var(--fs-sm); }
 .space-bar span:first-child { background: var(--c-peche-300); height: 16px; border-radius: 2px; }
 
-/* ---------- 4. Header / navigation ---------- */
 .site-header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -242,7 +223,6 @@ a { color: inherit; text-underline-offset: 3px; }
   .burger { display: inline-flex; }
 }
 
-/* Barre mobile basse (navigation principale) */
 .tabbar {
   display: grid; grid-template-columns: repeat(4, 1fr);
   background: var(--surface); border-top: 1px solid var(--border);
@@ -256,12 +236,10 @@ a { color: inherit; text-underline-offset: 3px; }
 .tabbar a[aria-current="page"] { color: var(--text); font-weight: 600; }
 .tabbar svg { width: 22px; height: 22px; }
 
-/* Fil d'Ariane */
 .breadcrumb ol { display: flex; flex-wrap: wrap; gap: var(--sp-2); list-style: none; margin: 0; padding: 0; font-size: var(--fs-sm); color: var(--text-muted); }
 .breadcrumb li + li::before { content: "›"; margin-right: var(--sp-2); }
 .breadcrumb [aria-current] { color: var(--text); }
 
-/* ---------- 5. Boutons ---------- */
 .btn {
   --btn-bg: var(--primary);
   --btn-fg: var(--c-blanc);
@@ -298,7 +276,6 @@ a { color: inherit; text-underline-offset: 3px; }
   cursor: not-allowed;
 }
 
-/* ---------- 6. Badges & chips ---------- */
 .badge {
   display: inline-flex; align-items: center; gap: var(--sp-1);
   padding: 3px var(--sp-2); border-radius: var(--r-pill);
@@ -326,13 +303,11 @@ a { color: inherit; text-underline-offset: 3px; }
 .chip[aria-current="true"] { background: var(--primary); border-color: var(--primary); color: var(--c-blanc); }
 .chip__dot { width: 10px; height: 10px; border-radius: 50%; }
 
-/* ---------- 7. Prix ---------- */
 .price { font-weight: 600; font-size: var(--fs-lg); }
 .price--old { color: var(--text-muted); text-decoration: line-through; font-weight: 400; font-size: var(--fs-sm); margin-left: var(--sp-2); }
 .price--sale { color: var(--c-framboise); }
 .price__from { font-weight: 400; font-size: var(--fs-sm); color: var(--text-muted); }
 
-/* ---------- 8. Card produit ---------- */
 .product-card {
   position: relative; display: flex; flex-direction: column;
   background: var(--surface); border: 1px solid var(--border);
@@ -345,13 +320,12 @@ a { color: inherit; text-underline-offset: 3px; }
 .product-card__body { display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-4); flex: 1; }
 .product-card__title { font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 600; margin: 0; }
 .product-card__title a { text-decoration: none; }
-.product-card__title a::after { content: ""; position: absolute; inset: 0; } /* carte entièrement cliquable */
+.product-card__title a::after { content: ""; position: absolute; inset: 0; }
 .product-card__desc { font-size: var(--fs-sm); color: var(--text-muted); margin: 0; }
 .product-card__footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: var(--sp-2); }
 .product-card__footer .btn { position: relative; z-index: 1; }
 .product-card--out { opacity: 0.6; }
 
-/* Emplacement photo (remplacer par les visuels officiels) */
 .ph {
   width: 100%; height: 100%;
   display: grid; place-items: center;
@@ -365,7 +339,6 @@ a { color: inherit; text-underline-offset: 3px; }
 .ph--framboise { background-color: #f4dde2; }
 .ph--mangue { background-color: #fbe9cd; }
 
-/* ---------- 9. Sélecteur d'options (produit variable) ---------- */
 .option-group { border: 0; padding: 0; margin: 0 0 var(--sp-5); }
 .option-group legend {
   display: flex; justify-content: space-between; width: 100%;
@@ -374,7 +347,6 @@ a { color: inherit; text-underline-offset: 3px; }
 .option-group legend small { font-weight: 400; color: var(--text-muted); }
 .option-group__required { color: var(--c-framboise); font-weight: 400; font-size: var(--fs-xs); }
 
-/* Tuiles radio (format, taille) */
 .option-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--sp-3); }
 .option-tile { position: relative; }
 .option-tile input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
@@ -390,7 +362,6 @@ a { color: inherit; text-underline-offset: 3px; }
 .option-tile input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 2px; }
 .option-tile input:disabled + label { opacity: 0.45; cursor: not-allowed; text-decoration: line-through; }
 
-/* Liste de cases (parfums, suppléments) */
 .option-list { display: grid; gap: var(--sp-2); }
 .option-row {
   display: flex; align-items: center; gap: var(--sp-3);
@@ -402,7 +373,6 @@ a { color: inherit; text-underline-offset: 3px; }
 .option-row__name { flex: 1; }
 .option-row__extra { font-size: var(--fs-sm); color: var(--text-muted); }
 
-/* ---------- 10. Formulaires ---------- */
 .field { display: grid; gap: var(--sp-1); margin-bottom: var(--sp-4); }
 .field label { font-size: var(--fs-sm); font-weight: 500; }
 .field__hint { font-size: var(--fs-xs); color: var(--text-muted); }
@@ -428,7 +398,6 @@ a { color: inherit; text-underline-offset: 3px; }
 .input-group { display: flex; gap: var(--sp-2); }
 .input-group .input { flex: 1; }
 
-/* Sélecteur de quantité */
 .qty {
   display: inline-flex; align-items: center;
   border: 1.5px solid var(--border); border-radius: var(--r-pill); background: var(--surface);
@@ -441,7 +410,6 @@ a { color: inherit; text-underline-offset: 3px; }
 .qty input { width: 40px; border: 0; text-align: center; font: inherit; background: none; -moz-appearance: textfield; }
 .qty input::-webkit-inner-spin-button { -webkit-appearance: none; }
 
-/* ---------- 11. Alertes ---------- */
 .alert {
   display: flex; gap: var(--sp-3); align-items: flex-start;
   padding: var(--sp-3) var(--sp-4); border-radius: var(--r-sm);
@@ -453,7 +421,6 @@ a { color: inherit; text-underline-offset: 3px; }
 .alert--danger { color: var(--c-danger); background: #fbe9e7; }
 .alert--info { color: var(--c-info); background: #e8eef4; }
 
-/* ---------- 12. Panier ---------- */
 .cart-line {
   display: grid; grid-template-columns: 72px 1fr auto; gap: var(--sp-4); align-items: start;
   padding: var(--sp-4) 0; border-bottom: 1px solid var(--border);
@@ -475,7 +442,6 @@ a { color: inherit; text-underline-offset: 3px; }
   font-weight: 600; font-size: var(--fs-lg);
 }
 
-/* Mode de retrait / livraison */
 .shipping-option {
   display: flex; gap: var(--sp-3); align-items: flex-start;
   padding: var(--sp-4); border: 1.5px solid var(--border); border-radius: var(--r-md);
@@ -487,7 +453,6 @@ a { color: inherit; text-underline-offset: 3px; }
 .shipping-option__body strong { display: block; }
 .shipping-option__body span { font-size: var(--fs-sm); color: var(--text-muted); }
 
-/* Créneaux de retrait */
 .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--sp-2); }
 .slot { position: relative; }
 .slot input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
@@ -500,7 +465,6 @@ a { color: inherit; text-underline-offset: 3px; }
 .slot input:disabled + label { opacity: 0.4; cursor: not-allowed; }
 .slot input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 2px; }
 
-/* Encadré instructions de retrait */
 .pickup-box {
   display: flex; gap: var(--sp-3);
   padding: var(--sp-4); border-radius: var(--r-md);
@@ -510,12 +474,10 @@ a { color: inherit; text-underline-offset: 3px; }
 .pickup-box p { margin: 0; font-size: var(--fs-sm); }
 .pickup-box svg { flex: none; width: 28px; height: 28px; color: var(--c-peche-300); }
 
-/* Tableau d'infos (nutrition / allergènes) */
 .info-table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
 .info-table th, .info-table td { text-align: left; padding: var(--sp-2) var(--sp-3); border-bottom: 1px solid var(--border); }
 .info-table th { font-weight: 500; color: var(--text-muted); }
 
-/* Étapes du tunnel */
 .steps { display: flex; gap: var(--sp-2); list-style: none; margin: 0; padding: 0; counter-reset: step; }
 .steps li {
   flex: 1; display: flex; align-items: center; gap: var(--sp-2);
@@ -535,18 +497,15 @@ a { color: inherit; text-underline-offset: 3px; }
   .steps li[aria-current="step"] span { display: inline; }
 }
 
-/* Avis */
 .stars { color: var(--c-peche); letter-spacing: 2px; }
 .review { padding: var(--sp-4) 0; border-bottom: 1px solid var(--border); }
 .review__head { display: flex; justify-content: space-between; gap: var(--sp-3); font-size: var(--fs-sm); margin-bottom: var(--sp-2); }
 
-/* Carte équipe */
 .team-card { text-align: center; }
 .team-card .ph { aspect-ratio: 1; height: auto; border-radius: 50%; width: min(140px, 100%); margin: 0 auto var(--sp-3); }
 .team-card h4 { margin-bottom: 0; }
 .team-card p { color: var(--text-muted); font-size: var(--fs-sm); }
 
-/* ---------- 13. Footer ---------- */
 .site-footer { background: var(--c-noir); color: var(--c-peche-50); padding: var(--sp-7) 0 var(--sp-5); }
 .site-footer__grid { display: grid; gap: var(--sp-5); grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 .site-footer h4 { color: var(--c-peche-300); font-size: var(--fs-md); font-family: var(--font-body); text-transform: uppercase; letter-spacing: 0.12em; }
